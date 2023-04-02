@@ -1,18 +1,23 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-button type="primary" @click="editResumes">编辑简历</el-button>
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script setup>
+import { useRouter } from 'vue-router';
 
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
+const router = useRouter()
+
+const editResumes = () => {
+  router.push({
+    path: '/edit'
+  })
 }
 </script>
+<style lang="scss">
+.home {
+  margin-top: 150px;
+  text-align: center;
+}
+</style>

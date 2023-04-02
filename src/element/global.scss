@@ -1,0 +1,81 @@
+article, aside, blockquote, body, button, dd, details, div, dl, dt, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, input, legend, li, menu, nav, ol, p, section, td, textarea, th, ul {
+    margin: 0;
+    padding: 0;
+}
+li, ol, ul {
+    list-style: none;
+}
+body, button, input, option, select, td, textarea {
+    -webkit-font-smoothing: antialiased;
+    color: #414a60;
+    font-family: arial,verdana,helvetica,PingFang SC,HanHei SC,STHeitiSC-Light,Microsoft Yahei,sans-serif;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+.el-collapse {
+    border: unset;
+  
+    .single-work-box {
+        margin-bottom: 20px;
+        position: relative;
+        background: #fff;
+        border: 1px solid #e9eaeb;
+        border-radius: 8px;
+        // height: 98px;
+        // padding: 20px 0;
+  
+    }
+    .el-collapse-item__header {
+      border: unset;
+      padding: 0 20px;
+      border-radius: 8px;
+      border-bottom: 1px solid;
+      border-bottom-color: transparent;
+
+    //   border-top-left-radius: 8px;
+    //   border-top-right-radius: 8px;
+    //   border-bottom: 1px solid #e9eaeb;
+    }
+    .is-active {
+        border-bottom-left-radius: unset;
+        border-bottom-right-radius: unset;
+        border-bottom-color: #e9eaeb;
+    }
+
+    .el-collapse-item__wrap {
+      border: unset;
+      padding: 0 20px;
+      border-radius: 8px;
+    }
+  }
+
+.blockTitle {
+    color: #12141a;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 33px;
+    padding: 16px 20px;
+}
+
+.padding-rl-20 {
+    padding: 0 20px;
+}
+
+.add-box {
+    align-items: center;
+    color: #5dd5c8;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 40px;
+    margin-left: 20px;
+    margin-top: 16px;
+    max-width: 150px;
+}
+
+.pointer {
+    cursor: pointer;
+}
