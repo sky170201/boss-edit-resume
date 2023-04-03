@@ -1,19 +1,22 @@
 <template>
     <!-- drag = false -->
-    <draggable v-model="list" class="dragContent" group="people" handle=".drag" @start="drag = true" @end="dragEnd" item-key="key">
+    <!-- drag = true -->
+    <draggable v-model="list" class="dragContent" group="people" handle=".drag" @choose="($event) => choose($event)"
+        @unchoose="unchoose" item-key="key">
         <template #item="{ element }">
-            <div class="block">
+            <div class="block" :data-key="element.key">
                 <div class="titleContainer">
                     <div class="blockTitle">{{ element.name }}</div>
                     <ul class="hover-icon">
                         <el-tooltip effect="dark" content="拖拽调整顺序" placement="top">
-                            <li class="drag" @mousedown="hiddenContent(element.key)" @mouseup="showContent(element.key)">
+                            <!--  @mousedown="hiddenContent(element.key)" @mouseup="showContent(element.key)" -->
+                            <li class="drag">
                                 <img class="icon info" src="@/assets/images/drag-menu.png">
                                 <img class="icon hover" src="@/assets/images/drag-menu-hover.png">
                             </li>
                         </el-tooltip>
                         <el-tooltip effect="dark" content="删除" placement="top">
-                            <li class="del">
+                            <li @click="deleteBlock(element.key)" class="del">
                                 <img class="icon info" src="@/assets/images/del.png">
                                 <img class="icon hover" src="@/assets/images/del-hover.png">
                             </li>
@@ -28,7 +31,27 @@
                     </div>
                     <!-- 工作经历 -->
                     <div v-if="element.key === 'D'">
-                        <WorkExperience />
+                        <WorkExperience ref="workExperienceRef" />
+                    </div>
+                    <!-- 实习经历 -->
+                    <div v-if="element.key === 'E'">
+                        <InternShipExperience ref="internShipExperienceRef" />
+                    </div>
+                    <!-- 项目经历 -->
+                    <div v-if="element.key === 'F'">
+                        <ProjectExperience ref="projectExperienceRef" />
+                    </div>
+                    <!-- 教育经历 -->
+                    <div v-if="element.key === 'C'">
+                        <EducationExperience ref="educationExperienceRef" />
+                    </div>
+                    <!-- 志愿者经历 -->
+                    <div v-if="element.key === 'I'">
+                        <VolunteerExperience ref="volunteerExperienceRef" />
+                    </div>
+                    <!-- 社团经历 -->
+                    <div v-if="element.key === 'K'">
+                        <ActiveExperience ref="activeExperienceRef" />
                     </div>
                     <!-- 社交主页 -->
                     <div v-if="element.key === 'H'">
@@ -94,32 +117,23 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import draggable from 'vuedraggable'
+// https://www.itxst.com/vue-draggable/vnqb7fey.html
+import { ElMessageBox } from 'element-plus'
 import { tinymceSetting } from './common';
 import WorkExperience from './components/WorkExperience.vue'
+import InternShipExperience from './components/InternShipExperience.vue'
+import ProjectExperience from './components/ProjectExperience.vue'
+import EducationExperience from './components/EducationExperience.vue'
+import VolunteerExperience from './components/VolunteerExperience.vue'
+import ActiveExperience from './components/ActiveExperience.vue'
 
-const list = ref([
-    // { name: '个人优势', key: 'B', isShow: true },
-    // { name: '社交主页', key: 'H', isShow: true },
-    // { name: '资格证书', key: 'G', isShow: true },
-    // { name: '专业技能', key: 'J', isShow: true },
-    // { id: 13, name: '兴趣爱好', key: 'L', isShow: true },
-    // { id: 14, name: '荣誉奖项', key: 'M', isShow: true },
-    { id: 4, name: '工作经历', key: 'D', isShow: true },
-])
-
-const hiddenContent = (key) => {
-    console.log('hiddenContent key', key);
-    list.value.forEach(_ => (_.key === key) && (_.isShow = false))
-}
-
-const showContent = (key) => {
-    console.log('showContent key', key);
-    // list.value.forEach(_ => (_.key === key) && (_.isShow = true))
-}
-
-const dragEnd = (e) => {
-    list.value.forEach(_ => _.isShow = true)
-}
+// 各模块引用
+const workExperienceRef = ref(null) // 工作经历
+const internShipExperienceRef = ref(null) // 实习经历
+const projectExperienceRef = ref(null) // 项目经历
+const educationExperienceRef = ref(null) // 教育经历
+const volunteerExperienceRef = ref(null) // 志愿者经历
+const activeExperienceRef = ref(null) // 社团经历
 
 const moduleTitleList = ref([
     { id: 1, name: '自定义模块', key: 'A', isShow: true },
@@ -132,10 +146,78 @@ const moduleTitleList = ref([
     { id: 8, name: '社交主页', key: 'H', isShow: true },
     { id: 9, name: '志愿者经历', key: 'I', isShow: true },
     { id: 10, name: '专业技能', key: 'J', isShow: true },
-    { id: 12, name: '社团经历', key: 'K', isShow: true },
+    // { id: 12, name: '社团经历', key: 'K', isShow: true },
     { id: 13, name: '兴趣爱好', key: 'L', isShow: true },
     { id: 14, name: '荣誉奖项', key: 'M', isShow: true },
 ])
+
+const list = ref([
+    // { name: '个人优势', key: 'B', isShow: true },
+    // { name: '社交主页', key: 'H', isShow: true },
+    // { name: '资格证书', key: 'G', isShow: true },
+    // { name: '专业技能', key: 'J', isShow: true },
+    // { id: 13, name: '兴趣爱好', key: 'L', isShow: true },
+    // { id: 14, name: '荣誉奖项', key: 'M', isShow: true },
+    // { id: 4, name: '工作经历', key: 'D', isShow: true },
+    // { id: 5, name: '实习经历', key: 'E', isShow: true },
+    // { id: 6, name: '项目经历', key: 'F', isShow: true },
+    // { id: 3, name: '教育经验', key: 'C', isShow: true },
+    // { id: 9, name: '志愿者经历', key: 'I', isShow: true },
+    { id: 12, name: '社团经历', key: 'K', isShow: true },
+])
+
+// 删除某一块区域
+const deleteBlock = (key) => {
+    if (list.value.length === 1) {
+        ElMessageBox.confirm(
+            '至少保留一个模块哦~',
+            '温馨提示',
+            {
+                confirmButtonText: '确定',
+                showCancelButton: false,
+                type: 'error',
+            }
+        )
+            .then(() => {
+
+            })
+        return
+    }
+    ElMessageBox.confirm(
+        '确认删除该模块吗？',
+        '温馨提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            const index = list.value.findIndex(_ => _.key === key)
+            const item = list.value.splice(index, 1)
+            moduleTitleList.value.push(...item)
+        })
+}
+
+const hiddenContent = (key) => {
+    console.log('hiddenContent key', key);
+    list.value.forEach(_ => (_.key === key) && (_.isShow = false))
+}
+
+const showContent = (key) => {
+    console.log('showContent key', key);
+    list.value.forEach(_ => (_.key === key) && (_.isShow = true))
+}
+
+const unchoose = (e) => {
+    const key = e.item.dataset.key
+    list.value.forEach(_ => _.isShow = true)
+}
+
+const choose = (e) => {
+    const key = e.item.dataset.key
+    hiddenContent(key)
+}
 
 // 添加模块
 const addModule = (key) => {
@@ -171,11 +253,6 @@ const onChange = (text, key) => {
         default:
             break;
     }
-}
-
-// 添加工作经历
-const addWork = (item) => {
-    state.workList.push(item)
 }
 
 // 社交主页
@@ -295,9 +372,12 @@ const addDomain = () => {
 
 <style lang="scss">
 .dragContent {
-    & > .sortable-chosen {
-        border-radius: 10px;
-        box-shadow: 0 0 5px #999999;
+
+    // &>.sortable-ghost {
+    &>.sortable-chosen {
+        background: hsla(0, 0%, 100%, .9);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, .08);
     }
 }
 </style>

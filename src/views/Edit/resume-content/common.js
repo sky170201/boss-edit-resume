@@ -54,8 +54,33 @@ export const salaryEndList = [
     },
 ];
 
+// 职位
+export const positionList = [
+    {
+        value: "F",
+        label: "前端开发工程师",
+    },
+];
+
+// 学历
+export const eduBgList = [
+    {
+        value: "A",
+        label: "本科",
+    },
+    {
+        value: "B",
+        label: "大专",
+    },
+    {
+        value: "C",
+        label: "高中",
+    },
+];
+
 // 富文本设置属性
 export const tinymceSetting = {
     height: 300, // editor 高度
-    menubar: false
-}
+    menubar: false, // 隐藏菜单栏
+    branding: false, // 隐藏品牌栏
+};

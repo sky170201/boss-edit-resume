@@ -1,13 +1,13 @@
 <template>
     <div class="resume-content">
         <div class="form-nav-header">
-            <div class="go-back">
+            <div @click="back" class="go-back">
                 <img src="@/assets/images/back.png">
                 <p>返回草稿列表</p>
             </div>
             <div class="rename-btn-box">
-                <h6>张三-前端开发工程师</h6>
-                <img src="@/assets/images/edit.png" class="rename-btn">
+                <h6>{{ resumeName }}</h6>
+                <img @click="open" src="@/assets/images/edit.png" class="rename-btn">
             </div>
             <el-select class="language-box" v-model="language" placeholder="Select">
                 <el-option v-for="item in langOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -18,17 +18,72 @@
             <DragContent />
         </div>
     </div>
+    <el-dialog v-model="dialogFormVisible" title="重命名简历">
+        <el-form ref="formRef" :model="form" :rules="rules">
+            <el-form-item prop="name" label=" " :label-width="formLabelWidth">
+                <el-input v-model="form.name" maxlength="30" show-word-limit />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="submitForm(formRef)">
+                    确认修改
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router';
 import PersonInfo from './PersonInfo.vue'
 import DragContent from './DragContent.vue'
+
+const router = useRouter()
 
 const langOptions = ref([
     { value: 'zh', label: '中文' }
 ])
 
+const back = () => {
+    router.push({
+        path: '/'
+    })
+}
+
 const language = ref('zh')
+
+const resumeName = ref('张三-前端开发工程师')
+
+const open = () => {
+    form.name = resumeName.value
+    dialogFormVisible.value = true
+}
+
+const formRef = ref(null)
+const dialogFormVisible = ref(false)
+const formLabelWidth = '0px'
+
+const form = reactive({
+    name: '',
+})
+const rules = reactive({
+    name: [
+        { required: true, message: '请输入简历名', trigger: 'blur' },
+    ]
+})
+
+const submitForm = (formEl) => {
+    if (!formEl) return
+    formEl.validate((valid) => {
+        if (valid) {
+            console.log('submit!')
+            resumeName.value = form.name
+            dialogFormVisible.value = false
+        }
+    })
+}
+
 
 </script>
 

@@ -5,9 +5,9 @@
         <el-collapse-item class="single-work-box" :name="element.name">
           <template #title>
             <div class="rough-info">
-              <div class="title-one">{{ formatCompany(element) }}</div>
+              <div class="title-one">{{ formatProjectName(element) }}</div>
               <div class="title-two">
-                <span>{{ formatPosition(element) }}</span>
+                <span>{{ formatProjectRole(element) }}</span>
                 <span class="divide-line"></span>
                 <span>{{ formatWorkDate(element) }}</span>
               </div>
@@ -24,13 +24,21 @@
           <el-form :model="element.form" :rules="element.rules" label-position="top" label-width="120px">
             <el-row>
               <el-col :span="11">
-                <el-form-item prop="companyName" label="公司">
-                  <el-input @blur="onFormBlur" v-model="element.form.companyName" />
+                <el-form-item prop="projectName" label="项目名称">
+                  <el-input @blur="onFormBlur" v-model="element.form.projectName" />
                 </el-form-item>
               </el-col>
               <el-col :span="2"></el-col>
               <el-col :span="11">
-                <el-form-item label="时间">
+                <el-form-item label="项目角色">
+                  <el-input @blur="onFormBlur" v-model="element.form.projectRole" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="职位类型">
                   <el-row>
                     <el-col :span="11">
                       <el-date-picker @blur="onFormBlur" v-model="element.form.start" type="month" placeholder="开始时间"
@@ -46,30 +54,22 @@
                   </el-row>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="11">
-                <el-form-item label="职位类型">
-                  <el-select @blur="onFormBlur" v-model="element.form.position" placeholder="请选择">
-                    <el-option v-for="item in positionList" :key="item.value" :label="item.label" :value="item.value" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
               <el-col :span="2"></el-col>
               <el-col :span="11">
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="工作内容">
+              <el-form-item label="项目描述">
                 <!--  @change="(event) => onChange(event, element.key)" -->
+                <!--  v-model="element.form.workContent" -->
                 <vue3-tinymce v-model="element.form.workContent" @change="(e) => onChange(e, 'workContent', element.name)"
                   :setting="tinymceSetting" />
               </el-form-item>
             </el-row>
             <el-row>
-              <el-form-item label="工作成绩">
+              <el-form-item label="项目业绩">
                 <!--  @change="(event) => onChange(event, element.key)" -->
+                <!--  v-model="element.form.achievement" -->
                 <vue3-tinymce v-model="element.form.achievement" @change="(e) => onChange(e, 'achievement', element.name)"
                   :setting="tinymceSetting" />
               </el-form-item>
@@ -83,7 +83,7 @@
     <el-icon>
       <Plus />
     </el-icon>
-    <span style="margin-left: 10px;">增加新的工作经历</span>
+    <span style="margin-left: 10px;">增加新的项目经验</span>
   </div>
 </template>
 
@@ -106,16 +106,17 @@ defineExpose({
 const workList = ref([{
   name: 1233332133,
   form: {
-    companyName: '',
+    projectName: '',
+    projectRole: '',
     start: '',
     end: '',
     position: '',
-    workContent: '',
-    achievement: ''
+    workContent: '123',
+    achievement: '213321'
   },
   rules: {
-    companyName: [
-      { required: true, message: '请填写所在公司', trigger: 'blur' },
+    projectName: [
+      { required: true, message: '请输入项目名称', trigger: 'blur' },
     ]
   }
 }])
@@ -124,7 +125,8 @@ const add = () => {
   workList.value.push({
     name: new Date().getTime(),
     form: {
-      companyName: '',
+      projectName: '',
+      projectRole: '',
       start: '',
       end: '',
       position: '',
@@ -177,11 +179,11 @@ const onFormBlur = (e) => {
 }
 
 // 格式化方法
-const formatCompany = (element) => {
-  return element.form.companyName ? element.form.companyName : '未填写公司名称'
+const formatProjectName = (element) => {
+  return element.form.projectName ? element.form.projectName : '未填写项目名称'
 }
-const formatPosition = (element) => {
-  return element.form.position ? getMap(positionList)[element.form.position] : '职位类型'
+const formatProjectRole = (element) => {
+  return element.form.projectRole ? element.form.projectRole : '项目角色'
 }
 const formatWorkDate = (element) => {
   let start = element.form.start
@@ -193,7 +195,7 @@ const formatWorkDate = (element) => {
     }
     return `${start}-${end}`
   } else {
-    return '工作时间'
+    return '项目时间'
   }
 }
 

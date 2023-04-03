@@ -49,17 +49,25 @@ body, button, input, option, select, td, textarea {
 
         .right-icon {
             position: absolute;
-            right: 0;
-            top: 0;
+            right: 30px;
+            top: 3px;
             display: none;
             .icon {
                 width: 20px;
+                margin-left: 10px;
             }
         }
         &:hover {
+            .title-one {
+                color: #00a6a7;
+            }
             .right-icon {
                 display: block;
             }
+        }
+        .el-form-item,
+        .tox-tinymce {
+            width: 100%;
         }
   
     }
@@ -70,10 +78,19 @@ body, button, input, option, select, td, textarea {
       border-radius: 8px;
       border-bottom: 1px solid;
       border-bottom-color: transparent;
+      position: relative;
+      .rough-info {
+        width: 250px;
+      }
 
     //   border-top-left-radius: 8px;
     //   border-top-right-radius: 8px;
     //   border-bottom: 1px solid #e9eaeb;
+      .el-collapse-item__arrow {
+        position: absolute;
+        right: 0;
+        top: 15px;
+      }
     }
     .is-active {
         border-bottom-left-radius: unset;
@@ -87,6 +104,13 @@ body, button, input, option, select, td, textarea {
       border-radius: 8px;
     }
   }
+
+.el-form-item__content {
+    .el-cascader,
+    .el-select {
+        width: 100%;
+    }
+}
 
 .blockTitle {
     color: #12141a;
@@ -117,3 +141,5 @@ body, button, input, option, select, td, textarea {
 .pointer {
     cursor: pointer;
 }
+
+// #f8f9fa

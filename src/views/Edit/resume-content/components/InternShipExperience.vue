@@ -24,13 +24,13 @@
           <el-form :model="element.form" :rules="element.rules" label-position="top" label-width="120px">
             <el-row>
               <el-col :span="11">
-                <el-form-item prop="companyName" label="公司">
+                <el-form-item prop="companyName" label="公司名称">
                   <el-input @blur="onFormBlur" v-model="element.form.companyName" />
                 </el-form-item>
               </el-col>
               <el-col :span="2"></el-col>
               <el-col :span="11">
-                <el-form-item label="时间">
+                <el-form-item label="在职时间">
                   <el-row>
                     <el-col :span="11">
                       <el-date-picker @blur="onFormBlur" v-model="element.form.start" type="month" placeholder="开始时间"
@@ -61,15 +61,17 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="工作内容">
+              <el-form-item label="实习经历">
                 <!--  @change="(event) => onChange(event, element.key)" -->
+                <!--  v-model="element.form.workContent" -->
                 <vue3-tinymce v-model="element.form.workContent" @change="(e) => onChange(e, 'workContent', element.name)"
                   :setting="tinymceSetting" />
               </el-form-item>
             </el-row>
             <el-row>
-              <el-form-item label="工作成绩">
+              <el-form-item label="实习成果">
                 <!--  @change="(event) => onChange(event, element.key)" -->
+                <!--  v-model="element.form.achievement" -->
                 <vue3-tinymce v-model="element.form.achievement" @change="(e) => onChange(e, 'achievement', element.name)"
                   :setting="tinymceSetting" />
               </el-form-item>
@@ -83,7 +85,7 @@
     <el-icon>
       <Plus />
     </el-icon>
-    <span style="margin-left: 10px;">增加新的工作经历</span>
+    <span style="margin-left: 10px;">增加新的实习经历</span>
   </div>
 </template>
 
@@ -110,8 +112,8 @@ const workList = ref([{
     start: '',
     end: '',
     position: '',
-    workContent: '',
-    achievement: ''
+    workContent: '123',
+    achievement: '213321'
   },
   rules: {
     companyName: [

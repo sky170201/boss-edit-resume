@@ -5,9 +5,11 @@
         <el-collapse-item class="single-work-box" :name="element.name">
           <template #title>
             <div class="rough-info">
-              <div class="title-one">{{ formatCompany(element) }}</div>
+              <div class="title-one">{{ formatSchoolName(element) }}</div>
               <div class="title-two">
-                <span>{{ formatPosition(element) }}</span>
+                <span>{{ formatEduBg(element) }}</span>
+                <span class="divide-line"></span>
+                <span>{{ formatMajor(element) }}</span>
                 <span class="divide-line"></span>
                 <span>{{ formatWorkDate(element) }}</span>
               </div>
@@ -24,53 +26,50 @@
           <el-form :model="element.form" :rules="element.rules" label-position="top" label-width="120px">
             <el-row>
               <el-col :span="11">
-                <el-form-item prop="companyName" label="公司">
-                  <el-input @blur="onFormBlur" v-model="element.form.companyName" />
+                <el-form-item prop="schoolName" label="学校名称">
+                  <el-input @blur="onFormBlur" v-model="element.form.schoolName" placeholder="例如：北京大学" />
                 </el-form-item>
               </el-col>
               <el-col :span="2"></el-col>
               <el-col :span="11">
-                <el-form-item label="时间">
-                  <el-row>
-                    <el-col :span="11">
-                      <el-date-picker @blur="onFormBlur" v-model="element.form.start" type="month" placeholder="开始时间"
-                        style="width: 100%" />
-                    </el-col>
-                    <el-col :span="2" style="text-align: center;">
-                      <span class="text-gray-500">至</span>
-                    </el-col>
-                    <el-col :span="11">
-                      <el-date-picker @blur="onFormBlur" v-model="element.form.end" type="month" placeholder="结束时间"
-                        style="width: 100%" />
-                    </el-col>
-                  </el-row>
+                <el-form-item label="学历">
+                  <el-select @blur="onFormBlur" v-model="element.form.eduBg" placeholder="选择学历">
+                    <el-option v-for="item in eduBgList" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="11">
-                <el-form-item label="职位类型">
-                  <el-select @blur="onFormBlur" v-model="element.form.position" placeholder="请选择">
-                    <el-option v-for="item in positionList" :key="item.value" :label="item.label" :value="item.value" />
-                  </el-select>
+                <el-form-item label="时间段">
+                  <el-row>
+                    <el-col :span="11">
+                      <el-date-picker @blur="onFormBlur" v-model="element.form.start" type="year" placeholder="选择年份"
+                        style="width: 100%" />
+                    </el-col>
+                    <el-col :span="2" style="text-align: center;">
+                      <span class="text-gray-500">至</span>
+                    </el-col>
+                    <el-col :span="11">
+                      <el-date-picker @blur="onFormBlur" v-model="element.form.end" type="year" placeholder="选择年份"
+                        style="width: 100%" />
+                    </el-col>
+                  </el-row>
                 </el-form-item>
               </el-col>
               <el-col :span="2"></el-col>
               <el-col :span="11">
+                <el-form-item label="专业">
+                  <el-input @blur="onFormBlur" v-model="element.form.major" placeholder="例如：计算机科学与技术" />
+                </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="工作内容">
+              <el-form-item label="在校经历">
                 <!--  @change="(event) => onChange(event, element.key)" -->
+                <!--  v-model="element.form.workContent" -->
                 <vue3-tinymce v-model="element.form.workContent" @change="(e) => onChange(e, 'workContent', element.name)"
-                  :setting="tinymceSetting" />
-              </el-form-item>
-            </el-row>
-            <el-row>
-              <el-form-item label="工作成绩">
-                <!--  @change="(event) => onChange(event, element.key)" -->
-                <vue3-tinymce v-model="element.form.achievement" @change="(e) => onChange(e, 'achievement', element.name)"
                   :setting="tinymceSetting" />
               </el-form-item>
             </el-row>
@@ -83,7 +82,7 @@
     <el-icon>
       <Plus />
     </el-icon>
-    <span style="margin-left: 10px;">增加新的工作经历</span>
+    <span style="margin-left: 10px;">增加新的教育经验</span>
   </div>
 </template>
 
@@ -91,7 +90,8 @@
 import moment from "moment"
 import { ref } from "vue";
 import draggable from 'vuedraggable'
-import { tinymceSetting, positionList } from '../common';
+import { ElMessageBox } from 'element-plus'
+import { tinymceSetting, eduBgList } from '../common';
 import { isValidDate, getMap } from '@/utils'
 
 const emit = defineEmits(['onVulesChange'])
@@ -106,16 +106,17 @@ defineExpose({
 const workList = ref([{
   name: 1233332133,
   form: {
-    companyName: '',
+    schoolName: '',
+    eduBg: '',
+    major: '',
     start: '',
     end: '',
     position: '',
-    workContent: '',
-    achievement: ''
+    workContent: '123',
   },
   rules: {
-    companyName: [
-      { required: true, message: '请填写所在公司', trigger: 'blur' },
+    schoolName: [
+      { required: true, message: '请输入学校名称', trigger: 'blur' },
     ]
   }
 }])
@@ -124,12 +125,13 @@ const add = () => {
   workList.value.push({
     name: new Date().getTime(),
     form: {
-      companyName: '',
+      schoolName: '',
+      eduBg: '',
+      major: '',
       start: '',
       end: '',
       position: '',
       workContent: '',
-      achievement: ''
     },
     rules: [
 
@@ -177,11 +179,14 @@ const onFormBlur = (e) => {
 }
 
 // 格式化方法
-const formatCompany = (element) => {
-  return element.form.companyName ? element.form.companyName : '未填写公司名称'
+const formatSchoolName = (element) => {
+  return element.form.schoolName ? element.form.schoolName : '未填写学校名称'
 }
-const formatPosition = (element) => {
-  return element.form.position ? getMap(positionList)[element.form.position] : '职位类型'
+const formatEduBg = (element) => {
+  return element.form.eduBg ? getMap(eduBgList)[element.form.eduBg] : '学历'
+}
+const formatMajor = (element) => {
+  return element.form.major ? element.form.major : '专业'
 }
 const formatWorkDate = (element) => {
   let start = element.form.start
@@ -193,7 +198,7 @@ const formatWorkDate = (element) => {
     }
     return `${start}-${end}`
   } else {
-    return '工作时间'
+    return '项目时间'
   }
 }
 
