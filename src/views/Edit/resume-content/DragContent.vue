@@ -1,6 +1,6 @@
 <template>
     <!-- drag = false -->
-    <draggable v-model="list" group="people" handle=".drag" @start="drag = true" @end="dragEnd" item-key="key">
+    <draggable v-model="list" class="dragContent" group="people" handle=".drag" @start="drag = true" @end="dragEnd" item-key="key">
         <template #item="{ element }">
             <div class="block">
                 <div class="titleContainer">
@@ -94,6 +94,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import draggable from 'vuedraggable'
+import { tinymceSetting } from './common';
 import WorkExperience from './components/WorkExperience.vue'
 
 const list = ref([
@@ -143,14 +144,9 @@ const addModule = (key) => {
     list.value.push(...item)
 }
 
-// 富文本设置属性
-const tinymceSetting = ref({
-    height: 300, // editor 高度
-    menubar: false
-})
-
 // 各模块状态
 const state = reactive({
+    workList: [],
     perAdvContent: '请输入个人优势',
     proSkiContent: '请输入专业技能',
     hobby: '请输入兴趣爱好',
@@ -175,6 +171,11 @@ const onChange = (text, key) => {
         default:
             break;
     }
+}
+
+// 添加工作经历
+const addWork = (item) => {
+    state.workList.push(item)
 }
 
 // 社交主页
@@ -293,8 +294,10 @@ const addDomain = () => {
 </style>
 
 <style lang="scss">
-.sortable-chosen {
-    border-radius: 10px;
-    box-shadow: 0 0 5px #999999;
+.dragContent {
+    & > .sortable-chosen {
+        border-radius: 10px;
+        box-shadow: 0 0 5px #999999;
+    }
 }
 </style>

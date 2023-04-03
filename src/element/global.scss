@@ -22,12 +22,50 @@ body, button, input, option, select, td, textarea {
         background: #fff;
         border: 1px solid #e9eaeb;
         border-radius: 8px;
-        // height: 98px;
-        // padding: 20px 0;
+        .title-one {
+            color: #12141a;
+            font-size: 16px;
+            font-weight: 600;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .title-two {
+            align-items: center;
+            color: #747680;
+            display: flex;
+            font-size: 14px;
+            font-weight: 400;
+            // margin-top: 16px;
+            .divide-line {
+                background: #dedfe0;
+                display: inline-block;
+                height: 12px;
+                margin: 0 16px;
+                width: 1px;
+            }
+        }
+
+        .right-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: none;
+            .icon {
+                width: 20px;
+            }
+        }
+        &:hover {
+            .right-icon {
+                display: block;
+            }
+        }
   
     }
     .el-collapse-item__header {
       border: unset;
+      height: 98px;
       padding: 0 20px;
       border-radius: 8px;
       border-bottom: 1px solid;
@@ -45,7 +83,7 @@ body, button, input, option, select, td, textarea {
 
     .el-collapse-item__wrap {
       border: unset;
-      padding: 0 20px;
+      padding: 20px 20px 10px;
       border-radius: 8px;
     }
   }

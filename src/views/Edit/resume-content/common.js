@@ -53,3 +53,9 @@ export const salaryEndList = [
         label: "20k",
     },
 ];
+
+// 富文本设置属性
+export const tinymceSetting = {
+    height: 300, // editor 高度
+    menubar: false
+}
