@@ -99,7 +99,7 @@ const emit = defineEmits(['onVulesChange'])
 // 对外暴露的方法
 defineExpose({
   getCurrentForm() {
-    return workLis.value
+    return workList.value
   }
 })
 
@@ -135,7 +135,6 @@ const add = () => {
 
     ]
   })
-  console.log('workList', workList);
 }
 
 // 删除某一条数据
@@ -168,12 +167,7 @@ const onChange = (str, key, name) => {
 
 // 监听表单失焦事件
 const onFormBlur = (e) => {
-  console.log('e', e);
-  console.log(workList.value);
-  emit('onVulesChange', {
-    data: workList.value,
-    blockType: 'workExperienceRef'
-  })
+  emit('onVulesChange')
 }
 
 // 格式化方法

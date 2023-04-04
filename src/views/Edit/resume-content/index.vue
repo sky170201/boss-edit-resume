@@ -14,8 +14,8 @@
             </el-select>
         </div>
         <div class="list-group">
-            <PersonInfo @handleChange="handleChange" />
-            <DragContent @handleChange="handleChange" />
+            <PersonInfo ref="personInfoRef" @handleChange="handleChange" />
+            <DragContent ref="dragContentRef" @handleChange="handleChange" />
         </div>
     </div>
     <el-dialog v-model="dialogFormVisible" title="重命名简历">
@@ -40,8 +40,16 @@ import PersonInfo from './PersonInfo.vue'
 import DragContent from './DragContent.vue'
 import mitt from '@/utils/mitt'
 
-const handleChange = (data) => {
-    mitt.emit('handleChange')
+const personInfoRef = ref(null)
+const dragContentRef = ref(null)
+
+const handleChange = () => {
+    const personInfoData = personInfoRef.value?.getCurrentData()
+    const dragContentData = dragContentRef.value?.getCurrentData()
+    mitt.emit('handleChange', {
+        personInfoData,
+        dragContentData
+    })
 }
 
 const router = useRouter()

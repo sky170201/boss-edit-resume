@@ -29,41 +29,46 @@
                         <vue3-tinymce @change="(event) => onChange(event, element.key)" v-model="state.perAdvContent"
                             :setting="tinymceSetting" />
                     </div>
+                    <!-- 教育经历 -->
+                    <div v-if="element.key === 'C'">
+                        <EducationExperience @onVulesChange="onVulesChange" ref="educationExperienceRef" />
+                    </div>
                     <!-- 工作经历 -->
                     <div v-if="element.key === 'D'">
-                        <WorkExperience ref="workExperienceRef" />
+                        <WorkExperience @onVulesChange="onVulesChange" ref="workExperienceRef" />
                     </div>
                     <!-- 实习经历 -->
                     <div v-if="element.key === 'E'">
-                        <InternShipExperience ref="internShipExperienceRef" />
+                        <InternShipExperience @onVulesChange="onVulesChange" ref="internShipExperienceRef" />
                     </div>
                     <!-- 项目经历 -->
                     <div v-if="element.key === 'F'">
-                        <ProjectExperience ref="projectExperienceRef" />
-                    </div>
-                    <!-- 教育经历 -->
-                    <div v-if="element.key === 'C'">
-                        <EducationExperience ref="educationExperienceRef" />
+                        <ProjectExperience @onVulesChange="onVulesChange" ref="projectExperienceRef" />
                     </div>
                     <!-- 志愿者经历 -->
                     <div v-if="element.key === 'I'">
-                        <VolunteerExperience ref="volunteerExperienceRef" />
+                        <VolunteerExperience @onVulesChange="onVulesChange" ref="volunteerExperienceRef" />
                     </div>
                     <!-- 社团经历 -->
                     <div v-if="element.key === 'K'">
-                        <ActiveExperience ref="activeExperienceRef" />
+                        <ActiveExperience @onVulesChange="onVulesChange" ref="activeExperienceRef" />
+                    </div>
+                    <!-- 资格证书 -->
+                    <div v-if="element.key === 'G'">
+                        <div class="list-container">
+                            <p>点击添加资格证书，如英语四、六级</p>
+                        </div>
                     </div>
                     <!-- 社交主页 -->
                     <div v-if="element.key === 'H'">
-                        <el-form class="mainPage" :label-width="20" ref="formRef" :model="socialPageForm"
-                            label-width="120px">
+                        <el-form class="mainPage" :label-width="20" ref="formRef" :model="socialPageForm">
                             <el-form-item v-for="(domain, index) in socialPageForm.domains" :key="domain.key" label=""
                                 :prop="'domains.' + index + '.value'" :rules="{
                                     required: true,
                                     message: '请输入社交主页',
                                     trigger: 'blur',
                                 }">
-                                <el-input placeholder="例如：github.com/erik" v-model="domain.value" />
+                                <el-input @blur="onChange" placeholder="例如：github.com/erik" v-model="domain.value" />
                                 <img @click.prevent="removeDomain(domain)" class="pointer delPage"
                                     src="@/assets/images/del.png">
                             </el-form-item>
@@ -73,12 +78,6 @@
                                 <Plus />
                             </el-icon>
                             <span style="margin-left: 10px;">增加新的社交主页</span>
-                        </div>
-                    </div>
-                    <!-- 资格证书 -->
-                    <div v-if="element.key === 'G'">
-                        <div class="list-container">
-                            <p>点击添加资格证书，如英语四、六级</p>
                         </div>
                     </div>
                     <!-- 专业技能 -->
@@ -127,6 +126,18 @@ import EducationExperience from './components/EducationExperience.vue'
 import VolunteerExperience from './components/VolunteerExperience.vue'
 import ActiveExperience from './components/ActiveExperience.vue'
 
+const emit = defineEmits(['handleChange'])
+
+defineExpose({
+    getCurrentData() {
+        return collectData()
+    }
+})
+
+const onVulesChange = () => {
+    emit('handleChange')
+}
+
 // 各模块引用
 const workExperienceRef = ref(null) // 工作经历
 const internShipExperienceRef = ref(null) // 实习经历
@@ -135,20 +146,41 @@ const educationExperienceRef = ref(null) // 教育经历
 const volunteerExperienceRef = ref(null) // 志愿者经历
 const activeExperienceRef = ref(null) // 社团经历
 
+// 收集所有数据
+const collectData = () => {
+    const workExperience = workExperienceRef.value?.getCurrentForm()
+    const internShipExperience = internShipExperienceRef.value?.getCurrentForm()
+    const projectExperience = projectExperienceRef.value?.getCurrentForm()
+    const educationExperience = educationExperienceRef.value?.getCurrentForm()
+    const volunteerExperience = volunteerExperienceRef.value?.getCurrentForm()
+    const activeExperience = activeExperienceRef.value?.getCurrentForm()
+    
+    return {
+        workExperience,
+        internShipExperience,
+        projectExperience,
+        educationExperience,
+        volunteerExperience,
+        activeExperience,
+        ...state,
+        social: socialPageForm.domains
+    }
+}
+
 const moduleTitleList = ref([
     { id: 1, name: '自定义模块', key: 'A', isShow: true },
     { id: 2, name: '个人优势', key: 'B', isShow: true },
     { id: 3, name: '教育经验', key: 'C', isShow: true },
-    { id: 4, name: '工作经历', key: 'D', isShow: true },
+    // { id: 4, name: '工作经历', key: 'D', isShow: true },
     { id: 5, name: '实习经历', key: 'E', isShow: true },
     { id: 6, name: '项目经历', key: 'F', isShow: true },
     { id: 7, name: '资格证书', key: 'G', isShow: true },
     { id: 8, name: '社交主页', key: 'H', isShow: true },
     { id: 9, name: '志愿者经历', key: 'I', isShow: true },
     { id: 10, name: '专业技能', key: 'J', isShow: true },
-    // { id: 12, name: '社团经历', key: 'K', isShow: true },
-    { id: 13, name: '兴趣爱好', key: 'L', isShow: true },
-    { id: 14, name: '荣誉奖项', key: 'M', isShow: true },
+    { id: 11, name: '社团经历', key: 'K', isShow: true },
+    { id: 12, name: '兴趣爱好', key: 'L', isShow: true },
+    { id: 13, name: '荣誉奖项', key: 'M', isShow: true },
 ])
 
 const list = ref([
@@ -156,14 +188,14 @@ const list = ref([
     // { name: '社交主页', key: 'H', isShow: true },
     // { name: '资格证书', key: 'G', isShow: true },
     // { name: '专业技能', key: 'J', isShow: true },
-    // { id: 13, name: '兴趣爱好', key: 'L', isShow: true },
-    // { id: 14, name: '荣誉奖项', key: 'M', isShow: true },
-    // { id: 4, name: '工作经历', key: 'D', isShow: true },
+    // { id: 12, name: '兴趣爱好', key: 'L', isShow: true },
+    // { id: 13, name: '荣誉奖项', key: 'M', isShow: true },
+    { id: 4, name: '工作经历', key: 'D', isShow: true },
     // { id: 5, name: '实习经历', key: 'E', isShow: true },
     // { id: 6, name: '项目经历', key: 'F', isShow: true },
     // { id: 3, name: '教育经验', key: 'C', isShow: true },
     // { id: 9, name: '志愿者经历', key: 'I', isShow: true },
-    { id: 12, name: '社团经历', key: 'K', isShow: true },
+    // { id: 11, name: '社团经历', key: 'K', isShow: true },
 ])
 
 // 删除某一块区域
@@ -228,7 +260,6 @@ const addModule = (key) => {
 
 // 各模块状态
 const state = reactive({
-    workList: [],
     perAdvContent: '请输入个人优势',
     proSkiContent: '请输入专业技能',
     hobby: '请输入兴趣爱好',
@@ -236,7 +267,6 @@ const state = reactive({
 });
 
 const onChange = (text, key) => {
-    console.log('text', text, key);
     switch (key) {
         case 'B':
             state.perAdvContent = text
@@ -253,6 +283,7 @@ const onChange = (text, key) => {
         default:
             break;
     }
+    onVulesChange()
 }
 
 // 社交主页

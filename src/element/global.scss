@@ -12,6 +12,17 @@ body, button, input, option, select, td, textarea {
     font-size: 14px;
     line-height: 26px;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #cfd4da;
+    border: 2px solid transparent;
+    border-color: transparent;
+    background-clip: padding-box;
+}
 
 .el-collapse {
     border: unset;

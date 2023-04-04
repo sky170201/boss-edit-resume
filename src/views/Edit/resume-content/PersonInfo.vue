@@ -78,16 +78,16 @@
             </el-form-item> -->
             <template v-for="item in showFormConfig.filter(_ => _.isShow)">
                 <el-form-item :key="item.name" v-if="!item.ele" :label="item.label">
-                    <el-input v-if="item.type === 'input'" v-model="form[item.name]" />
-                    <el-select v-if="item.type === 'select'" v-model="form[item.name]" placeholder="请选择">
+                    <el-input @blur="onFormBlur" v-if="item.type === 'input'" v-model="form[item.name]" />
+                    <el-select @blur="onFormBlur" v-if="item.type === 'select'" v-model="form[item.name]" placeholder="请选择">
                         <el-option v-for="itey in item.options" :key="itey.value" :label="itey.label"
                             :value="itey.value" />
                     </el-select>
-                    <el-date-picker v-if="item.type === 'date'" v-model="form[item.name]" :type="item.dateType" placeholder="请选择" style="width: 100%" />
-                    <el-cascader v-if="item.type === 'cascader'" v-model="form[item.name]" :options="item.options" :show-all-levels="false" />
+                    <el-date-picker @blur="onFormBlur" v-if="item.type === 'date'" v-model="form[item.name]" :type="item.dateType" placeholder="请选择" style="width: 100%" />
+                    <el-cascader @blur="onFormBlur" v-if="item.type === 'cascader'" v-model="form[item.name]" :options="item.options" :show-all-levels="false" />
                     <template v-if="item.name === 'salary'">
                         <el-col :span="11">
-                            <el-select v-model="form[item['key'][0]]" placeholder="请选择">
+                            <el-select @blur="onFormBlur" v-model="form[item['key'][0]]" placeholder="请选择">
                                 <el-option v-for="itey in item.options[0]" :key="itey.value" :label="itey.label"
                                     :value="itey.value" />
                             </el-select>
@@ -96,7 +96,7 @@
                             <span class="text-gray-500">至</span>
                         </el-col>
                         <el-col :span="11">
-                            <el-select v-model="form[item['key'][1]]" placeholder="请选择">
+                            <el-select @blur="onFormBlur" v-model="form[item['key'][1]]" placeholder="请选择">
                                 <el-option v-for="itey in item.options[1]" :key="itey.value" :label="itey.label"
                                     :value="itey.value" />
                             </el-select>
@@ -173,6 +173,14 @@
 import { reactive, ref } from 'vue'
 import { cityList, salaryStartList, salaryEndList } from './common'
 
+const emit = defineEmits(['handleChange'])
+
+defineExpose({
+    getCurrentData() {
+        return form
+    }
+})
+
 const form = reactive({
     name: '',
     avatar: '',
@@ -195,13 +203,19 @@ const imageUrl = ref('')
 const onChangeUpload = (
     uploadFile,
 ) => {
+    form.avatar = uploadFile.raw
     imageUrl.value = URL.createObjectURL(uploadFile.raw)
+    onFormBlur()
 }
 
 // 删除头像
 const deleteAvatar = () => {
     form.avatar = ''
     imageUrl.value = ''
+}
+
+const onFormBlur = () => {
+    emit('handleChange')
 }
 
 const showFormConfig = ref([
