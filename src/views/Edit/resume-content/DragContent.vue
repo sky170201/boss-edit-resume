@@ -10,20 +10,20 @@
                     <ul class="hover-icon">
                         <el-tooltip effect="dark" content="拖拽调整顺序" placement="top">
                             <!--  @mousedown="hiddenContent(element.key)" @mouseup="showContent(element.key)" -->
-                            <li class="drag">
+                            <li @click.stop="() => { }" class="drag">
                                 <img class="icon info" src="@/assets/images/drag-menu.png">
                                 <img class="icon hover" src="@/assets/images/drag-menu-hover.png">
                             </li>
                         </el-tooltip>
                         <el-tooltip effect="dark" content="删除" placement="top">
-                            <li @click="deleteBlock(element.key)" class="del">
+                            <li @click.stop="deleteBlock(element.key)" class="del">
                                 <img class="icon info" src="@/assets/images/del.png">
                                 <img class="icon hover" src="@/assets/images/del-hover.png">
                             </li>
                         </el-tooltip>
                     </ul>
                 </div>
-                <main v-if="element.isShow">
+                <main v-show="element.isShow">
                     <!-- 个人优势 -->
                     <div v-if="element.key === 'B'">
                         <vue3-tinymce @change="(event) => onChange(event, element.key)" v-model="state.perAdvContent"
@@ -56,7 +56,12 @@
                     <!-- 资格证书 -->
                     <div v-if="element.key === 'G'">
                         <div class="list-container">
-                            <p>点击添加资格证书，如英语四、六级</p>
+                            <p @click="() => {
+                                ElMessage({
+                                    showClose: true,
+                                    message: '该功能暂未开放',
+                                })
+                            }">点击添加资格证书，如英语四、六级</p>
                         </div>
                     </div>
                     <!-- 社交主页 -->
@@ -117,7 +122,7 @@
 import { reactive, ref } from 'vue';
 import draggable from 'vuedraggable'
 // https://www.itxst.com/vue-draggable/vnqb7fey.html
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { tinymceSetting } from './common';
 import WorkExperience from './components/WorkExperience.vue'
 import InternShipExperience from './components/InternShipExperience.vue'
@@ -154,7 +159,7 @@ const collectData = () => {
     const educationExperience = educationExperienceRef.value?.getCurrentForm()
     const volunteerExperience = volunteerExperienceRef.value?.getCurrentForm()
     const activeExperience = activeExperienceRef.value?.getCurrentForm()
-    
+
     return {
         workExperience,
         internShipExperience,
@@ -232,27 +237,36 @@ const deleteBlock = (key) => {
 }
 
 const hiddenContent = (key) => {
-    console.log('hiddenContent key', key);
+    // console.log('hiddenContent key', key);
     list.value.forEach(_ => (_.key === key) && (_.isShow = false))
 }
 
 const showContent = (key) => {
-    console.log('showContent key', key);
+    // console.log('showContent key', key);
     list.value.forEach(_ => (_.key === key) && (_.isShow = true))
 }
 
 const unchoose = (e) => {
     const key = e.item.dataset.key
+    // console.log('unchoose key', key);
     list.value.forEach(_ => _.isShow = true)
 }
 
 const choose = (e) => {
     const key = e.item.dataset.key
+    // console.log('choose key', key);
     hiddenContent(key)
 }
 
 // 添加模块
 const addModule = (key) => {
+    if (key === 'A') {
+        ElMessage({
+            showClose: true,
+            message: '该功能暂未开放',
+        })
+        return
+    }
     const index = moduleTitleList.value.findIndex(_ => _.key === key)
     const item = moduleTitleList.value.splice(index, 1)
     list.value.push(...item)
