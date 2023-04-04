@@ -3,7 +3,19 @@
         right-side
     </div>
 </template>
+<script setup>
+import mitt from '@/utils/mitt'
+import { onUnmounted } from 'vue';
 
+const handleChange = () => {
+    console.log('handleChange');
+}
+mitt.on('handleChange', handleChange)
+onUnmounted(() => {
+    mitt.off('handleChange', handleChange)
+})
+
+</script>
 
 <style lang="scss">
 .right-side {
